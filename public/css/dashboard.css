@@ -1,0 +1,142 @@
+/* ============================================================
+   StockVision - Dashboard Styles
+   Specific styles for the dashboard and widgets
+   ============================================================ */
+
+/* ── Dashboard Grid ────────────────────────────────────────── */
+.dashboard-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+}
+
+.dashboard-widgets-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-6);
+}
+
+@media (max-width: 1024px) {
+    .dashboard-widgets-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ── Recent Activity Widget ────────────────────────────────── */
+.activity-timeline {
+    position: relative;
+    padding-left: var(--space-6);
+    margin-top: var(--space-4);
+}
+
+.activity-timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 9px;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: var(--space-5);
+}
+
+.timeline-item:last-child {
+    margin-bottom: 0;
+}
+
+.timeline-icon {
+    position: absolute;
+    left: calc(var(--space-6) * -1);
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    border: 2px solid var(--bg-card);
+    z-index: 1;
+}
+
+.timeline-content {
+    background: var(--bg-hover);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--space-1);
+}
+
+.timeline-user {
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.timeline-time {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-xs);
+}
+
+.timeline-desc {
+    color: var(--text-secondary);
+}
+
+/* ── Quick Actions Widget ──────────────────────────────────── */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    padding: var(--space-4);
+    background: var(--bg-hover);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+}
+
+.action-btn i {
+    font-size: var(--font-size-xl);
+    color: var(--primary);
+    margin-bottom: var(--space-1);
+    transition: transform var(--transition-fast);
+}
+
+.action-btn:hover {
+    background: var(--bg-card);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-sm);
+    color: var(--primary);
+}
+
+.action-btn:hover i {
+    transform: translateY(-2px);
+}
+
+/* ── Mini Chart Placeholder ────────────────────────────────── */
+.mini-chart {
+    height: 40px;
+    width: 80px;
+    margin-left: auto;
+    opacity: 0.8;
+}

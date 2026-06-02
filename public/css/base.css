@@ -1,0 +1,154 @@
+/* ============================================================
+   StockVision - Base Styles
+   CSS reset, typography, global styles
+   ============================================================ */
+
+/* ── Modern CSS Reset ──────────────────────────────────────── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    line-height: var(--line-height-normal);
+    color: var(--text-primary);
+    background-color: var(--bg-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+}
+
+/* ── Typography ────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    color: var(--text-primary);
+    margin-bottom: 0.5em;
+}
+
+h1 { font-size: var(--font-size-3xl); }
+h2 { font-size: var(--font-size-2xl); }
+h3 { font-size: var(--font-size-xl); }
+h4 { font-size: var(--font-size-lg); }
+h5 { font-size: var(--font-size-base); }
+h6 { font-size: var(--font-size-sm); }
+
+p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+}
+
+a {
+    color: var(--text-link);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+/* ── Lists ─────────────────────────────────────────────────── */
+ul, ol {
+    list-style: none;
+}
+
+/* ── Images ────────────────────────────────────────────────── */
+img, svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* ── Tables ────────────────────────────────────────────────── */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+/* ── Inputs ────────────────────────────────────────────────── */
+input, button, textarea, select {
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+/* ── Focus Styles ──────────────────────────────────────────── */
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-sm);
+}
+
+/* ── Selection ─────────────────────────────────────────────── */
+::selection {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* ── Scrollbar Styling (Webkit) ────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--text-tertiary);
+    border-radius: var(--border-radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-secondary);
+}
+
+/* Firefox scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--text-tertiary) transparent;
+}
+
+/* ── Misc ──────────────────────────────────────────────────── */
+hr {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: var(--space-6) 0;
+}
+
+code {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: var(--font-size-sm);
+    background: var(--bg-hover);
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+    color: var(--danger);
+}
+
+strong {
+    font-weight: var(--font-weight-semibold);
+}
+
+small {
+    font-size: var(--font-size-xs);
+}
