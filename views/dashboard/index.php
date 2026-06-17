@@ -5,9 +5,6 @@
         <p class="text-secondary mt-1">Welcome back, <?= htmlspecialchars(currentUserName()) ?>!</p>
     </div>
     <div class="page-header-actions">
-        <a href="<?= BASE_URL ?>/reports" class="btn btn-outline">
-            <i class="fa-solid fa-file-export"></i> Reports
-        </a>
         <a href="<?= BASE_URL ?>/products/create" class="btn btn-primary">
             <i class="fa-solid fa-plus"></i> Add Product
         </a>
@@ -20,7 +17,7 @@
         <div class="stat-card-icon"><i class="fa-solid fa-box"></i></div>
         <div class="stat-card-info">
             <div class="stat-card-value"><?= number_format($stats['total_products'] ?? 0) ?></div>
-            <div class="stat-card-label">Active Products</div>
+            <div class="stat-card-label">Total Products</div>
         </div>
     </div>
     <div class="stat-card success">
@@ -41,7 +38,7 @@
         <div class="stat-card-icon"><i class="fa-solid fa-truck"></i></div>
         <div class="stat-card-info">
             <div class="stat-card-value"><?= number_format($stats['total_suppliers'] ?? 0) ?></div>
-            <div class="stat-card-label">Active Suppliers</div>
+            <div class="stat-card-label">Total Suppliers</div>
         </div>
     </div>
     <div class="stat-card secondary">
@@ -73,7 +70,6 @@
         <div class="card">
             <div class="card-header">
                 <h3><i class="fa-solid fa-chart-line text-primary mr-2"></i>Stock Trend (Last 14 Days)</h3>
-                <a href="<?= BASE_URL ?>/analytics" class="btn btn-sm btn-ghost">Full Analytics</a>
             </div>
             <div class="card-body" style="padding-top: 0;">
                 <canvas id="dash-trend-chart" height="80"></canvas>
@@ -157,14 +153,6 @@
                         <i class="fa-solid fa-bell text-danger"></i>
                         <span>Alerts <?php if (($stats['low_stock_count'] ?? 0) > 0): ?><span class="badge badge-danger ml-1"><?= $stats['low_stock_count'] ?></span><?php endif; ?></span>
                     </a>
-                    <a href="<?= BASE_URL ?>/analytics" class="action-btn">
-                        <i class="fa-solid fa-chart-pie text-secondary"></i>
-                        <span>Analytics</span>
-                    </a>
-                    <a href="<?= BASE_URL ?>/reports" class="action-btn">
-                        <i class="fa-solid fa-file-lines text-info"></i>
-                        <span>Reports</span>
-                    </a>
                 </div>
             </div>
         </div>
@@ -226,9 +214,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
 (function() {
-    const isDark    = document.documentElement.getAttribute('data-theme') === 'dark';
-    const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.06)';
-    const tickColor = isDark ? '#94a3b8' : '#64748b';
+    const gridColor = 'rgba(0,0,0,0.06)';
+    const tickColor = '#64748b';
     Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.color = tickColor;
 

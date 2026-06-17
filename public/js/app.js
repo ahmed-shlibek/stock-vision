@@ -1,14 +1,14 @@
 /**
  * StockVision - Main Application Script
- * Handles layout interactivity: sidebar, dark mode, dropdowns
+ * Handles layout interactivity: sidebar, dropdowns
  */
 
 document.addEventListener('DOMContentLoaded', () => {
     initSidebar();
-    initDarkMode();
     initUserDropdown();
     initMobileMenu();
-    
+    initAlertBadge();
+
     // Auto-dismiss alerts after 5 seconds
     setTimeout(() => {
         const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
@@ -36,41 +36,6 @@ function initSidebar() {
         sidebar.classList.toggle('collapsed');
         localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
     });
-}
-
-function initDarkMode() {
-    const html = document.documentElement;
-    const themeToggle = document.getElementById('theme-toggle');
-    
-    if (!themeToggle) return;
-
-    // Check localStorage or system preference
-    const savedTheme = localStorage.getItem('theme');
-    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    let currentTheme = savedTheme || (systemDark ? 'dark' : 'light');
-    
-    // Apply theme
-    html.setAttribute('data-theme', currentTheme);
-    updateThemeIcon(currentTheme);
-
-    themeToggle.addEventListener('click', () => {
-        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-        html.setAttribute('data-theme', currentTheme);
-        localStorage.setItem('theme', currentTheme);
-        updateThemeIcon(currentTheme);
-    });
-
-    function updateThemeIcon(theme) {
-        const icon = themeToggle.querySelector('i');
-        if (theme === 'dark') {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
-        } else {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        }
-    }
 }
 
 function initUserDropdown() {
@@ -108,3 +73,20 @@ function initMobileMenu() {
     mobileBtn.addEventListener('click', toggleMobileMenu);
     overlay.addEventListener('click', toggleMobileMenu);
 }
+
+/**
+ * Topbar alert badge — fetch the low/out-of-stock count and display it.
+ */
+function initAlertBadge() {
+    const badge = document.getElementById('topbar-alert-badge');
+    if (!badge) return;
+
+    fetchAPI('/api/alerts/count')
+        .then(data => {
+            const count = data?.count ?? 0;
+            badge.textContent = count;
+            badge.classList.toggle('d-none', count === 0);
+        })
+        .catch(() => { /* badge stays hidden on failure */ });
+}
+

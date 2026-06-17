@@ -49,9 +49,9 @@ class Supplier
     public function getAllList(): array
     {
         $stmt = $this->db->query("
-            SELECT `id`, `name` 
-            FROM `suppliers` 
-            WHERE `deleted_at` IS NULL AND `is_active` = 1
+            SELECT `id`, `name`
+            FROM `suppliers`
+            WHERE `deleted_at` IS NULL
             ORDER BY `name` ASC
         ");
         return $stmt->fetchAll();
@@ -77,16 +77,15 @@ class Supplier
     public function create(array $data): int
     {
         $stmt = $this->db->prepare("
-            INSERT INTO `suppliers` (`name`, `phone`, `email`, `address`, `is_active`) 
-            VALUES (:name, :phone, :email, :address, :is_active)
+            INSERT INTO `suppliers` (`name`, `phone`, `email`, `address`)
+            VALUES (:name, :phone, :email, :address)
         ");
-        
+
         $stmt->execute([
             ':name'      => $data['name'],
             ':phone'     => $data['phone'] ?? null,
             ':email'     => $data['email'] ?? null,
-            ':address'   => $data['address'] ?? null,
-            ':is_active' => $data['is_active'] ?? 1
+            ':address'   => $data['address'] ?? null
         ]);
 
         return (int)$this->db->lastInsertId();
@@ -98,22 +97,20 @@ class Supplier
     public function update(int $id, array $data): bool
     {
         $stmt = $this->db->prepare("
-            UPDATE `suppliers` 
-            SET `name` = :name, 
-                `phone` = :phone, 
+            UPDATE `suppliers`
+            SET `name` = :name,
+                `phone` = :phone,
                 `email` = :email,
-                `address` = :address,
-                `is_active` = :is_active
+                `address` = :address
             WHERE `id` = :id AND `deleted_at` IS NULL
         ");
-        
+
         return $stmt->execute([
             ':id'        => $id,
             ':name'      => $data['name'],
             ':phone'     => $data['phone'] ?? null,
             ':email'     => $data['email'] ?? null,
-            ':address'   => $data['address'] ?? null,
-            ':is_active' => $data['is_active'] ?? 1
+            ':address'   => $data['address'] ?? null
         ]);
     }
 

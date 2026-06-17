@@ -21,9 +21,7 @@
     </div>
     
     <div class="card-body">
-        <form action="<?= BASE_URL ?>/stock/out" method="POST" id="stock-out-form">
-            <?= csrfField() ?>
-            
+        <form action="<?= BASE_URL ?>/stock/out" method="POST" id="stock-out-form">            
             <div class="form-group">
                 <label for="product_id" class="form-label">Product <span class="required">*</span></label>
                 <select id="product_id" name="product_id" class="form-control <?= hasError('product_id') ? 'is-invalid' : '' ?>" required>

@@ -7,30 +7,13 @@
 const BASE_URL = document.querySelector('meta[name="base-url"]')?.content || '';
 
 /**
- * Fetch wrapper with CSRF support and JSON handling
+ * Fetch wrapper with JSON handling
  */
 async function fetchAPI(url, options = {}) {
     const defaultHeaders = {
         'Accept': 'application/json',
         'X-Requested-With': 'XMLHttpRequest'
     };
-
-    // Auto-attach CSRF token for POST requests if available in DOM
-    if (options.method && options.method.toUpperCase() === 'POST') {
-        const csrfInput = document.querySelector('input[name="csrf_token"]');
-        if (csrfInput && !options.body) {
-            // If body is FormData, we should append it there instead, but for simple fetch:
-            if (!(options.body instanceof FormData)) {
-                if (!options.headers) options.headers = {};
-                // If it's a JSON POST
-                if (options.headers['Content-Type'] === 'application/json') {
-                    let body = JSON.parse(options.body || '{}');
-                    body.csrf_token = csrfInput.value;
-                    options.body = JSON.stringify(body);
-                }
-            }
-        }
-    }
 
     options.headers = { ...defaultHeaders, ...options.headers };
 

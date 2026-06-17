@@ -50,11 +50,6 @@ class CategoryController
      */
     public function store(): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/categories/create');
-        }
-
         $data = [
             'name'        => trim($_POST['name'] ?? ''),
             'description' => trim($_POST['description'] ?? ''),
@@ -83,8 +78,7 @@ class CategoryController
         }
 
         $id = $this->categoryModel->create($data);
-        logActivity('category.created', 'category', $id, 'Created category: ' . $data['name']);
-        
+
         clearOld();
         setFlash('success', 'Category created successfully.');
         redirect('/categories');
@@ -111,11 +105,6 @@ class CategoryController
      */
     public function update(int $id): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect("/categories/{$id}/edit");
-        }
-
         $category = $this->categoryModel->findById($id);
         if (!$category) {
             setFlash('danger', 'Category not found.');
@@ -147,8 +136,7 @@ class CategoryController
         }
 
         $this->categoryModel->update($id, $data);
-        logActivity('category.updated', 'category', $id, 'Updated category: ' . $data['name']);
-        
+
         clearOld();
         setFlash('success', 'Category updated successfully.');
         redirect('/categories');
@@ -159,11 +147,6 @@ class CategoryController
      */
     public function delete(int $id): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/categories');
-        }
-
         $category = $this->categoryModel->findById($id);
         if (!$category) {
             setFlash('danger', 'Category not found.');
@@ -171,8 +154,7 @@ class CategoryController
         }
 
         $this->categoryModel->delete($id);
-        logActivity('category.deleted', 'category', $id, 'Deleted category: ' . $category['name']);
-        
+
         setFlash('success', 'Category deleted successfully.');
         redirect('/categories');
     }

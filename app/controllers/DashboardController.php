@@ -22,25 +22,15 @@ class DashboardController
 
         $stats           = $this->getStats();
         $recentMovements = $this->getRecentMovements(8);
-        $recentActivity  = $this->getRecentActivity(8);
         $lowStockItems   = $this->getLowStockItems(5);
-        $trendData       = $this->getStockTrend(14); // last 14 days
+        $trendData       = $this->getStockTrend(14);
         $categoryData    = $this->getCategoryDistribution();
 
         $pageTitle = 'Dashboard';
         $this->render('dashboard/index', compact(
-            'pageTitle', 'stats', 'recentMovements', 'recentActivity',
+            'pageTitle', 'stats', 'recentMovements',
             'lowStockItems', 'trendData', 'categoryData'
         ));
-    }
-
-    /**
-     * API: Return dashboard stats as JSON
-     */
-    public function stats(): void
-    {
-        requireLogin();
-        jsonResponse($this->getStats());
     }
 
     /**
@@ -50,13 +40,13 @@ class DashboardController
     {
         $stats = [];
 
-        $stmt = $this->db->query("SELECT COUNT(*) FROM `products` WHERE `deleted_at` IS NULL AND `is_active` = 1");
+        $stmt = $this->db->query("SELECT COUNT(*) FROM `products` WHERE `deleted_at` IS NULL");
         $stats['total_products'] = (int)$stmt->fetchColumn();
 
         $stmt = $this->db->query("SELECT COUNT(*) FROM `categories` WHERE `deleted_at` IS NULL");
         $stats['total_categories'] = (int)$stmt->fetchColumn();
 
-        $stmt = $this->db->query("SELECT COUNT(*) FROM `suppliers` WHERE `deleted_at` IS NULL AND `is_active` = 1");
+        $stmt = $this->db->query("SELECT COUNT(*) FROM `suppliers` WHERE `deleted_at` IS NULL");
         $stats['total_suppliers'] = (int)$stmt->fetchColumn();
 
         $stmt = $this->db->query("SELECT COALESCE(SUM(`quantity`), 0) FROM `products` WHERE `deleted_at` IS NULL");
@@ -65,12 +55,8 @@ class DashboardController
         $stmt = $this->db->query("SELECT COALESCE(SUM(`quantity` * `unit_price`), 0) FROM `products` WHERE `deleted_at` IS NULL");
         $stats['total_value'] = (float)$stmt->fetchColumn();
 
-        $stmt = $this->db->query("SELECT COUNT(*) FROM `products` WHERE `quantity` <= `min_stock_level` AND `deleted_at` IS NULL AND `is_active` = 1");
+        $stmt = $this->db->query("SELECT COUNT(*) FROM `products` WHERE `quantity` <= `min_stock_level` AND `deleted_at` IS NULL");
         $stats['low_stock_count'] = (int)$stmt->fetchColumn();
-
-        // Today's movements
-        $stmt = $this->db->query("SELECT COUNT(*) FROM `stock_movements` WHERE DATE(created_at) = CURDATE()");
-        $stats['movements_today'] = (int)$stmt->fetchColumn();
 
         return $stats;
     }
@@ -87,7 +73,6 @@ class DashboardController
             LEFT JOIN `categories` c ON p.category_id = c.id
             WHERE p.quantity <= p.min_stock_level
               AND p.deleted_at IS NULL
-              AND p.is_active = 1
             ORDER BY (p.quantity / GREATEST(p.min_stock_level, 1)) ASC
             LIMIT ?
         ");
@@ -150,7 +135,7 @@ class DashboardController
                 SUM(p.quantity * p.unit_price) AS value
             FROM `products` p
             LEFT JOIN `categories` c ON p.category_id = c.id
-            WHERE p.deleted_at IS NULL AND p.is_active = 1
+            WHERE p.deleted_at IS NULL
             GROUP BY c.id, c.name, c.color
             HAVING value > 0
             ORDER BY value DESC
@@ -181,22 +166,6 @@ class DashboardController
             JOIN `products` p ON sm.product_id = p.id
             JOIN `users` u ON sm.user_id = u.id
             ORDER BY sm.created_at DESC
-            LIMIT ?
-        ");
-        $stmt->execute([$limit]);
-        return $stmt->fetchAll();
-    }
-
-    /**
-     * Get recent activity log entries
-     */
-    private function getRecentActivity(int $limit = 8): array
-    {
-        $stmt = $this->db->prepare("
-            SELECT al.*, u.name AS user_name
-            FROM `activity_logs` al
-            LEFT JOIN `users` u ON al.user_id = u.id
-            ORDER BY al.created_at DESC
             LIMIT ?
         ");
         $stmt->execute([$limit]);

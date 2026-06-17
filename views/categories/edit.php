@@ -10,8 +10,6 @@
 <div class="card" style="max-width: 600px;">
     <div class="card-body">
         <form action="<?= BASE_URL ?>/categories/<?= $category['id'] ?>/update" method="POST">
-            <?= csrfField() ?>
-
             <div class="form-group">
                 <label for="name" class="form-label">Category Name <span class="required">*</span></label>
                 <input type="text" id="name" name="name" 

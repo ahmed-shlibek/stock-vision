@@ -24,8 +24,6 @@
                             <th width="60">User</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
                             <th>Last Login</th>
                             <th width="100" class="text-right">Actions</th>
                         </tr>
@@ -34,35 +32,12 @@
                         <?php foreach ($users as $user): ?>
                             <tr>
                                 <td>
-                                    <?php if ($user['avatar']): ?>
-                                        <div class="avatar avatar-sm">
-                                            <img src="<?= BASE_URL ?>/uploads/avatars/<?= htmlspecialchars($user['avatar']) ?>" alt="Avatar">
-                                        </div>
-                                    <?php else: ?>
-                                        <div class="avatar avatar-sm">
-                                            <?= strtoupper(substr($user['name'], 0, 1)) ?>
-                                        </div>
-                                    <?php endif; ?>
+                                    <div class="avatar avatar-sm">
+                                        <?= strtoupper(substr($user['name'], 0, 1)) ?>
+                                    </div>
                                 </td>
                                 <td class="font-medium"><?= htmlspecialchars($user['name']) ?></td>
                                 <td class="text-secondary"><?= htmlspecialchars($user['email']) ?></td>
-                                <td>
-                                    <?php
-                                        $badgeClass = 'badge-secondary';
-                                        if ($user['role'] === ROLE_ADMIN) $badgeClass = 'badge-primary';
-                                        elseif ($user['role'] === ROLE_EMPLOYEE) $badgeClass = 'badge-info';
-                                    ?>
-                                    <span class="badge <?= $badgeClass ?>">
-                                        <?= ucfirst(htmlspecialchars($user['role'])) ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php if ($user['is_active']): ?>
-                                        <span class="badge badge-success">Active</span>
-                                    <?php else: ?>
-                                        <span class="badge badge-danger">Inactive</span>
-                                    <?php endif; ?>
-                                </td>
                                 <td class="text-sm text-secondary">
                                     <?= $user['last_login'] ? date('M j, Y g:i A', strtotime($user['last_login'])) : 'Never' ?>
                                 </td>
@@ -78,9 +53,7 @@
                                                 title="Delete">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
-                                        <form id="delete-form-<?= $user['id'] ?>" action="<?= BASE_URL ?>/users/<?= $user['id'] ?>/delete" method="POST" class="d-none">
-                                            <?= csrfField() ?>
-                                        </form>
+                                        <form id="delete-form-<?= $user['id'] ?>" action="<?= BASE_URL ?>/users/<?= $user['id'] ?>/delete" method="POST" class="d-none">                                        </form>
                                     <?php endif; ?>
                                 </td>
                             </tr>

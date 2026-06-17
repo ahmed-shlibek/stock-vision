@@ -78,11 +78,6 @@ class ProductController
      */
     public function store(): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/products/create');
-        }
-
         $data = $this->getPostData();
 
         // Validate
@@ -103,8 +98,7 @@ class ProductController
         }
 
         $id = $this->productModel->create($data);
-        logActivity('product.created', 'product', $id, 'Created product: ' . $data['name'] . ' (' . $data['sku'] . ')');
-        
+
         // Initial Stock Movement log if quantity > 0
         if ($data['quantity'] > 0) {
             $stmt = $this->db->prepare("INSERT INTO `stock_movements` (`product_id`, `user_id`, `type`, `quantity`, `quantity_before`, `quantity_after`, `notes`) VALUES (?, ?, 'in', ?, 0, ?, 'Initial stock entry')");
@@ -140,11 +134,6 @@ class ProductController
      */
     public function update(int $id): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect("/products/{$id}/edit");
-        }
-
         $product = $this->productModel->findById($id);
         if (!$product) {
             setFlash('danger', 'Product not found.');
@@ -180,8 +169,7 @@ class ProductController
         }
 
         $this->productModel->update($id, $data);
-        logActivity('product.updated', 'product', $id, 'Updated product: ' . $data['name']);
-        
+
         clearOld();
         setFlash('success', 'Product updated successfully.');
         redirect('/products');
@@ -192,11 +180,6 @@ class ProductController
      */
     public function delete(int $id): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/products');
-        }
-
         $product = $this->productModel->findById($id);
         if (!$product) {
             setFlash('danger', 'Product not found.');
@@ -204,31 +187,9 @@ class ProductController
         }
 
         $this->productModel->delete($id);
-        logActivity('product.deleted', 'product', $id, 'Deleted product: ' . $product['name']);
-        
+
         setFlash('success', 'Product deleted successfully.');
         redirect('/products');
-    }
-
-    /**
-     * API: Search products (for stock operations)
-     */
-    public function search(): void
-    {
-        $query = trim($_GET['q'] ?? '');
-        if (strlen($query) < 2) {
-            jsonResponse([]);
-        }
-
-        $stmt = $this->db->prepare("
-            SELECT `id`, `name`, `sku`, `quantity`, `unit`, `unit_price`
-            FROM `products`
-            WHERE (`name` LIKE :q OR `sku` LIKE :q OR `barcode` LIKE :q) 
-            AND `deleted_at` IS NULL AND `is_active` = 1
-            LIMIT 10
-        ");
-        $stmt->execute([':q' => "%{$query}%"]);
-        jsonResponse($stmt->fetchAll());
     }
 
     // --- Helper Methods ---
@@ -238,7 +199,6 @@ class ProductController
         return [
             'name'            => trim($_POST['name'] ?? ''),
             'sku'             => trim($_POST['sku'] ?? ''),
-            'barcode'         => trim($_POST['barcode'] ?? ''),
             'category_id'     => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
             'supplier_id'     => !empty($_POST['supplier_id']) ? (int)$_POST['supplier_id'] : null,
             'description'     => trim($_POST['description'] ?? ''),
@@ -246,7 +206,6 @@ class ProductController
             'quantity'        => (int)($_POST['quantity'] ?? 0),
             'min_stock_level' => (int)($_POST['min_stock_level'] ?? 10),
             'unit'            => trim($_POST['unit'] ?? 'piece'),
-            'is_active'       => isset($_POST['is_active']) ? 1 : 0,
         ];
     }
 

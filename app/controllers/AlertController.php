@@ -38,7 +38,6 @@ class AlertController
             SELECT COUNT(*) FROM `products`
             WHERE `quantity` <= `min_stock_level`
               AND `deleted_at` IS NULL
-              AND `is_active` = 1
         ");
         jsonResponse(['count' => (int)$stmt->fetchColumn()]);
     }
@@ -52,7 +51,7 @@ class AlertController
             FROM `products` p
             LEFT JOIN `categories` c ON p.category_id = c.id
             LEFT JOIN `suppliers` s ON p.supplier_id = s.id
-            WHERE p.quantity = 0 AND p.deleted_at IS NULL AND p.is_active = 1
+            WHERE p.quantity = 0 AND p.deleted_at IS NULL
             ORDER BY p.name ASC
         ");
         return $stmt->fetchAll();
@@ -68,7 +67,7 @@ class AlertController
             LEFT JOIN `categories` c ON p.category_id = c.id
             LEFT JOIN `suppliers` s ON p.supplier_id = s.id
             WHERE p.quantity > 0 AND p.quantity <= p.min_stock_level
-              AND p.deleted_at IS NULL AND p.is_active = 1
+              AND p.deleted_at IS NULL
             ORDER BY (p.quantity / GREATEST(p.min_stock_level, 1)) ASC
         ");
         return $stmt->fetchAll();

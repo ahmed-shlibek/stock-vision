@@ -24,8 +24,12 @@ class Product
         $params = [];
 
         if ($search !== '') {
-            $where[] = "(p.`name` LIKE :search OR p.`sku` LIKE :search OR p.`barcode` LIKE :search)";
-            $params[':search'] = "%{$search}%";
+            // Native prepared statements (EMULATE_PREPARES=false) require a distinct
+            // placeholder per occurrence, so bind one per searched column.
+            $where[] = "(p.`name` LIKE :search_name OR p.`sku` LIKE :search_sku)";
+            $like = "%{$search}%";
+            $params[':search_name'] = $like;
+            $params[':search_sku']  = $like;
         }
 
         if ($categoryId) {
@@ -99,20 +103,19 @@ class Product
     {
         $stmt = $this->db->prepare("
             INSERT INTO `products` (
-                `name`, `sku`, `barcode`, `category_id`, `supplier_id`, 
-                `description`, `unit_price`, `quantity`, `min_stock_level`, 
-                `unit`, `image`, `is_active`
+                `name`, `sku`, `category_id`, `supplier_id`,
+                `description`, `unit_price`, `quantity`, `min_stock_level`,
+                `unit`, `image`
             ) VALUES (
-                :name, :sku, :barcode, :category_id, :supplier_id, 
-                :description, :unit_price, :quantity, :min_stock_level, 
-                :unit, :image, :is_active
+                :name, :sku, :category_id, :supplier_id,
+                :description, :unit_price, :quantity, :min_stock_level,
+                :unit, :image
             )
         ");
-        
+
         $stmt->execute([
             ':name'            => $data['name'],
             ':sku'             => $data['sku'],
-            ':barcode'         => $data['barcode'] ?: null,
             ':category_id'     => $data['category_id'] ?: null,
             ':supplier_id'     => $data['supplier_id'] ?: null,
             ':description'     => $data['description'] ?: null,
@@ -120,8 +123,7 @@ class Product
             ':quantity'        => $data['quantity'] ?? 0,
             ':min_stock_level' => $data['min_stock_level'] ?? 10,
             ':unit'            => $data['unit'] ?? 'piece',
-            ':image'           => $data['image'] ?: null,
-            ':is_active'       => $data['is_active'] ?? 1
+            ':image'           => $data['image'] ?: null
         ]);
 
         return (int)$this->db->lastInsertId();
@@ -135,32 +137,28 @@ class Product
         $stmt = $this->db->prepare("
             UPDATE `products` SET 
                 `name` = :name, 
-                `sku` = :sku, 
-                `barcode` = :barcode, 
-                `category_id` = :category_id, 
+                `sku` = :sku,
+                `category_id` = :category_id,
                 `supplier_id` = :supplier_id, 
                 `description` = :description, 
                 `unit_price` = :unit_price, 
                 `min_stock_level` = :min_stock_level, 
-                `unit` = :unit, 
-                `image` = :image, 
-                `is_active` = :is_active
+                `unit` = :unit,
+                `image` = :image
             WHERE `id` = :id AND `deleted_at` IS NULL
         ");
-        
+
         return $stmt->execute([
             ':id'              => $id,
             ':name'            => $data['name'],
             ':sku'             => $data['sku'],
-            ':barcode'         => $data['barcode'] ?: null,
             ':category_id'     => $data['category_id'] ?: null,
             ':supplier_id'     => $data['supplier_id'] ?: null,
             ':description'     => $data['description'] ?: null,
             ':unit_price'      => $data['unit_price'] ?? 0.00,
             ':min_stock_level' => $data['min_stock_level'] ?? 10,
             ':unit'            => $data['unit'] ?? 'piece',
-            ':image'           => $data['image'] ?: null,
-            ':is_active'       => $data['is_active'] ?? 1
+            ':image'           => $data['image'] ?: null
         ]);
     }
 
@@ -209,14 +207,14 @@ class Product
     }
 
     /**
-     * Get all active products for dropdowns
+     * Get all products for dropdowns
      */
     public function getActiveProducts(): array
     {
         $stmt = $this->db->query("
-            SELECT `id`, `name`, `sku`, `quantity`, `unit` 
-            FROM `products` 
-            WHERE `is_active` = 1 AND `deleted_at` IS NULL 
+            SELECT `id`, `name`, `sku`, `quantity`, `unit`
+            FROM `products`
+            WHERE `deleted_at` IS NULL
             ORDER BY `name` ASC
         ");
         return $stmt->fetchAll();

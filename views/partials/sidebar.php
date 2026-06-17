@@ -64,47 +64,22 @@ function isActive(string $path): string {
         </div>
 
         <div class="sidebar-section">
-            <div class="sidebar-section-label">Analytics</div>
-            <a href="<?= BASE_URL ?>/analytics" class="sidebar-link <?= isActive('/analytics') ?>">
-                <i class="fa-solid fa-chart-pie"></i>
-                <span class="link-text">Analytics</span>
-            </a>
-            <a href="<?= BASE_URL ?>/reports" class="sidebar-link <?= isActive('/reports') ?>">
-                <i class="fa-solid fa-file-lines"></i>
-                <span class="link-text">Reports</span>
-            </a>
-        </div>
-
-        <?php if (hasRole(ROLE_ADMIN)): ?>
-        <div class="sidebar-section">
             <div class="sidebar-section-label">System</div>
             <a href="<?= BASE_URL ?>/users" class="sidebar-link <?= isActive('/users') ?>">
                 <i class="fa-solid fa-users"></i>
                 <span class="link-text">Users</span>
             </a>
-            <a href="<?= BASE_URL ?>/activity-log" class="sidebar-link <?= isActive('/activity-log') ?>">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-                <span class="link-text">Activity Log</span>
-            </a>
         </div>
-        <?php endif; ?>
     </nav>
 
     <div class="sidebar-footer">
-        <?php $avatar = currentUserAvatar(); ?>
-        <?php if ($avatar): ?>
-            <div class="avatar avatar-sm">
-                <img src="<?= BASE_URL ?>/uploads/avatars/<?= htmlspecialchars($avatar) ?>" alt="Avatar">
-            </div>
-        <?php else: ?>
-            <div class="avatar avatar-sm">
-                <?= strtoupper(substr(currentUserName() ?? 'U', 0, 1)) ?>
-            </div>
-        <?php endif; ?>
-        
+        <div class="avatar avatar-sm">
+            <?= strtoupper(substr(currentUserName() ?? 'U', 0, 1)) ?>
+        </div>
+
         <div class="sidebar-user-info">
             <div class="sidebar-user-name"><?= htmlspecialchars(currentUserName() ?? '') ?></div>
-            <div class="sidebar-user-role"><?= htmlspecialchars(currentUserRole() ?? '') ?></div>
+            <div class="sidebar-user-role"><?= htmlspecialchars(currentUserEmail() ?? '') ?></div>
         </div>
     </div>
 

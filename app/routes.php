@@ -19,7 +19,6 @@ return [
 
     // ── Dashboard ───────────────────────────────────────────
     ['GET',  '/',                   'DashboardController', 'index'],
-    ['GET',  '/api/dashboard/stats','DashboardController', 'stats'],
 
     // ── Products ────────────────────────────────────────────
     ['GET',  '/products',           'ProductController',   'index'],
@@ -29,7 +28,6 @@ return [
     ['GET',  '/products/{id}/edit', 'ProductController',   'edit'],
     ['POST', '/products/{id}/update',  'ProductController','update'],
     ['POST', '/products/{id}/delete',  'ProductController','delete'],
-    ['GET',  '/api/products/search','ProductController',   'search'],
 
     // ── Categories ──────────────────────────────────────────
     ['GET',  '/categories',             'CategoryController', 'index'],
@@ -59,21 +57,6 @@ return [
     ['GET',  '/alerts',             'AlertController',     'index'],
     ['GET',  '/api/alerts/count',   'AlertController',     'count'],
 
-    // ── Analytics ───────────────────────────────────────────
-    ['GET',  '/analytics',              'AnalyticsController', 'index'],
-    ['GET',  '/api/analytics/categories','AnalyticsController','byCategory'],
-    ['GET',  '/api/analytics/monthly',  'AnalyticsController', 'monthly'],
-    ['GET',  '/api/analytics/top-moving','AnalyticsController','topMoving'],
-    ['GET',  '/api/analytics/stock-trend','AnalyticsController','stockTrend'],
-    ['GET',  '/api/analytics/value',    'AnalyticsController', 'inventoryValue'],
-
-    // ── Reports ─────────────────────────────────────────────
-    ['GET',  '/reports',            'ReportController',    'index'],
-    ['GET',  '/reports/inventory',  'ReportController',    'inventory'],
-    ['GET',  '/reports/low-stock',  'ReportController',    'lowStock'],
-    ['GET',  '/reports/movements',  'ReportController',    'movements'],
-    ['GET',  '/reports/suppliers',  'ReportController',    'suppliers'],
-
     // ── Users (Admin Only) ──────────────────────────────────
     ['GET',  '/users',              'UserController',      'index'],
     ['GET',  '/users/create',       'UserController',      'create'],
@@ -81,7 +64,4 @@ return [
     ['GET',  '/users/{id}/edit',    'UserController',      'edit'],
     ['POST', '/users/{id}/update',  'UserController',      'update'],
     ['POST', '/users/{id}/delete',  'UserController',      'delete'],
-
-    // ── Activity Log ────────────────────────────────────────
-    ['GET',  '/activity-log',       'ActivityLogController','index'],
 ];

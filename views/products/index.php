@@ -15,7 +15,7 @@
                 <div class="input-icon-wrapper icon-left">
                     <i class="fa-solid fa-magnifying-glass"></i>
                     <input type="text" id="search" name="search" class="form-control" 
-                           placeholder="Search by name, SKU, or barcode..." 
+                           placeholder="Search by name or SKU..."
                            value="<?= htmlspecialchars($search) ?>">
                 </div>
             </div>
@@ -107,9 +107,7 @@
                                     </span>
                                 </td>
                                 <td class="text-right">
-                                    <?php if (!$prod['is_active']): ?>
-                                        <span class="badge badge-secondary">Inactive</span>
-                                    <?php elseif ($prod['quantity'] == 0): ?>
+                                    <?php if ($prod['quantity'] == 0): ?>
                                         <span class="badge badge-danger">Out of Stock</span>
                                     <?php elseif ($prod['quantity'] <= $prod['min_stock_level']): ?>
                                         <span class="badge badge-warning">Low Stock</span>
@@ -132,9 +130,7 @@
                                                 title="Delete">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
-                                        <form id="delete-form-<?= $prod['id'] ?>" action="<?= BASE_URL ?>/products/<?= $prod['id'] ?>/delete" method="POST" class="d-none">
-                                            <?= csrfField() ?>
-                                        </form>
+                                        <form id="delete-form-<?= $prod['id'] ?>" action="<?= BASE_URL ?>/products/<?= $prod['id'] ?>/delete" method="POST" class="d-none">                                        </form>
                                     </div>
                                 </td>
                             </tr>

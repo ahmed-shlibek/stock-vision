@@ -14,10 +14,6 @@
     overflow: hidden;
 }
 
-[data-theme="dark"] .auth-page {
-    background: linear-gradient(135deg, var(--bg-body) 0%, #1e1b4b 100%);
-}
-
 /* Background animated shapes */
 .auth-page::before,
 .auth-page::after {
@@ -63,11 +59,6 @@
     z-index: 1;
     padding: var(--space-8) var(--space-6);
     animation: slideUp 0.5s ease-out;
-}
-
-[data-theme="dark"] .auth-card {
-    background: rgba(30, 41, 59, 0.85);
-    border-color: rgba(255, 255, 255, 0.05);
 }
 
 @keyframes slideUp {

@@ -10,8 +10,6 @@
 <div class="card" style="max-width: 600px;">
     <div class="card-body">
         <form action="<?= BASE_URL ?>/suppliers/<?= $supplier['id'] ?>/update" method="POST">
-            <?= csrfField() ?>
-
             <div class="form-group">
                 <label for="name" class="form-label">Supplier Name <span class="required">*</span></label>
                 <input type="text" id="name" name="name" 
@@ -55,15 +53,6 @@
                 <?php if (hasError('address')): ?>
                     <span class="form-error"><?= htmlspecialchars(getError('address')) ?></span>
                 <?php endif; ?>
-            </div>
-
-            <div class="form-group mb-5">
-                <label class="form-label d-block">Status</label>
-                <label class="toggle-switch">
-                    <input type="checkbox" name="is_active" value="1" <?= old('is_active', $supplier['is_active']) ? 'checked' : '' ?>>
-                    <span class="toggle-slider"></span>
-                    <span class="toggle-label ml-2">Active Supplier</span>
-                </label>
             </div>
 
             <div class="d-flex justify-content-end gap-3">

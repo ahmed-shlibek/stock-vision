@@ -1,7 +1,7 @@
 <?php
 /**
  * StockVision - User Controller
- * Admin-only user management CRUD
+ * User management CRUD
  */
 
 class UserController
@@ -20,7 +20,7 @@ class UserController
      */
     public function index(): void
     {
-        requireRole(ROLE_ADMIN);
+        requireLogin();
 
         $page = max(1, (int)($_GET['page'] ?? 1));
         $result = $this->userModel->getAll($page);
@@ -43,7 +43,7 @@ class UserController
      */
     public function create(): void
     {
-        requireRole(ROLE_ADMIN);
+        requireLogin();
 
         $pageTitle = 'Create User';
         $errors = getErrors();
@@ -55,19 +55,12 @@ class UserController
      */
     public function store(): void
     {
-        requireRole(ROLE_ADMIN);
-
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/users/create');
-        }
+        requireLogin();
 
         $data = [
             'name'     => trim($_POST['name'] ?? ''),
             'email'    => trim($_POST['email'] ?? ''),
             'password' => $_POST['password'] ?? '',
-            'role'     => $_POST['role'] ?? ROLE_EMPLOYEE,
-            'is_active'=> isset($_POST['is_active']) ? 1 : 0,
         ];
         $passwordConfirm = $_POST['password_confirm'] ?? '';
 
@@ -89,9 +82,6 @@ class UserController
         if ($data['password'] !== $passwordConfirm) {
             $errors['password_confirm'] = 'Passwords do not match.';
         }
-        if ($err = validateIn($data['role'], [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_VIEWER], 'Role')) {
-            $errors['role'] = $err;
-        }
 
         if (!empty($errors)) {
             setErrors($errors);
@@ -100,7 +90,6 @@ class UserController
         }
 
         $userId = $this->userModel->create($data);
-        logActivity('user.created', 'user', $userId, 'Created user: ' . $data['name']);
         clearOld();
         setFlash('success', 'User created successfully.');
         redirect('/users');
@@ -111,7 +100,7 @@ class UserController
      */
     public function edit(int $id): void
     {
-        requireRole(ROLE_ADMIN);
+        requireLogin();
 
         $user = $this->userModel->findById($id);
         if (!$user) {
@@ -129,12 +118,7 @@ class UserController
      */
     public function update(int $id): void
     {
-        requireRole(ROLE_ADMIN);
-
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect("/users/{$id}/edit");
-        }
+        requireLogin();
 
         $user = $this->userModel->findById($id);
         if (!$user) {
@@ -145,8 +129,6 @@ class UserController
         $data = [
             'name'     => trim($_POST['name'] ?? ''),
             'email'    => trim($_POST['email'] ?? ''),
-            'role'     => $_POST['role'] ?? $user['role'],
-            'is_active'=> isset($_POST['is_active']) ? 1 : 0,
         ];
 
         // Validate
@@ -159,9 +141,6 @@ class UserController
                 $errors['email'] = $err;
             }
         }
-        if ($err = validateIn($data['role'], [ROLE_ADMIN, ROLE_EMPLOYEE, ROLE_VIEWER], 'Role')) {
-            $errors['role'] = $err;
-        }
 
         if (!empty($errors)) {
             setErrors($errors);
@@ -170,7 +149,6 @@ class UserController
         }
 
         $this->userModel->update($id, $data);
-        logActivity('user.updated', 'user', $id, 'Updated user: ' . $data['name']);
         clearOld();
         setFlash('success', 'User updated successfully.');
         redirect('/users');
@@ -181,12 +159,7 @@ class UserController
      */
     public function delete(int $id): void
     {
-        requireRole(ROLE_ADMIN);
-
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/users');
-        }
+        requireLogin();
 
         // Prevent self-deletion
         if ($id === currentUserId()) {
@@ -201,7 +174,6 @@ class UserController
         }
 
         $this->userModel->delete($id);
-        logActivity('user.deleted', 'user', $id, 'Deleted user: ' . $user['name']);
         setFlash('success', 'User deleted successfully.');
         redirect('/users');
     }

@@ -8,8 +8,6 @@
     </div>
 
     <form action="<?= BASE_URL ?>/login" method="POST" class="auth-form" id="login-form">
-        <?= csrfField() ?>
-
         <div class="form-group">
             <label for="email" class="form-label">Email Address</label>
             <div class="input-icon-wrapper icon-left w-100">

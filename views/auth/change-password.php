@@ -10,8 +10,6 @@
 <div class="card" style="max-width: 500px;">
     <div class="card-body">
         <form action="<?= BASE_URL ?>/change-password" method="POST">
-            <?= csrfField() ?>
-
             <div class="form-group">
                 <label for="current_password" class="form-label">Current Password <span class="required">*</span></label>
                 <div class="input-icon-wrapper icon-right">

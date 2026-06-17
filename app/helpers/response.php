@@ -60,7 +60,7 @@ function old(string $field, mixed $default = ''): mixed
 function setOld(array $data): void
 {
     // Don't store sensitive fields
-    unset($data['password'], $data['password_confirm'], $data['current_password'], $data['csrf_token']);
+    unset($data['password'], $data['password_confirm'], $data['current_password']);
     $_SESSION['old'] = $data;
 }
 

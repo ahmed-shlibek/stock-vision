@@ -58,11 +58,6 @@ class StockController
      */
     public function storeIn(): void
     {
-        if (!verifyCsrf()) {
-            setFlash('error', 'Invalid security token.');
-            redirect('/stock/in');
-        }
-
         $productId = (int)($_POST['product_id'] ?? 0);
         $quantity  = (int)($_POST['quantity'] ?? 0);
         $notes     = trim($_POST['notes'] ?? '');
@@ -104,11 +99,6 @@ class StockController
      */
     public function storeOut(): void
     {
-        if (!verifyCsrf()) {
-            setFlash('error', 'Invalid security token.');
-            redirect('/stock/out');
-        }
-
         $productId = (int)($_POST['product_id'] ?? 0);
         $quantity  = (int)($_POST['quantity'] ?? 0);
         $notes     = trim($_POST['notes'] ?? '');

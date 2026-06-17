@@ -4,10 +4,6 @@
  * Single entry point: routes all requests to appropriate controllers
  */
 
-// ── Session Configuration ──────────────────────────────────
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_strict_mode', 1);
-ini_set('session.cookie_samesite', 'Lax');
 session_start();
 
 // ── Load Environment Variables ───────────────────────────────
@@ -21,7 +17,6 @@ require_once __DIR__ . '/../app/config/database.php';
 // ── Load Helpers ────────────────────────────────────────────
 require_once __DIR__ . '/../app/helpers/auth.php';
 require_once __DIR__ . '/../app/helpers/validation.php';
-require_once __DIR__ . '/../app/helpers/logger.php';
 require_once __DIR__ . '/../app/helpers/response.php';
 require_once __DIR__ . '/../app/helpers/format.php';
 

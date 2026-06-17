@@ -23,7 +23,6 @@
                         <tr>
                             <th>Name</th>
                             <th>Contact Info</th>
-                            <th>Status</th>
                             <th width="100" class="text-right">Actions</th>
                         </tr>
                     </thead>
@@ -51,13 +50,6 @@
                                         <?php endif; ?>
                                     </div>
                                 </td>
-                                <td>
-                                    <?php if ($sup['is_active']): ?>
-                                        <span class="badge badge-success">Active</span>
-                                    <?php else: ?>
-                                        <span class="badge badge-secondary">Inactive</span>
-                                    <?php endif; ?>
-                                </td>
                                 <td class="text-right">
                                     <div class="actions justify-content-end">
                                         <a href="<?= BASE_URL ?>/suppliers/<?= $sup['id'] ?>/edit" class="btn btn-icon btn-ghost btn-sm" title="Edit">
@@ -70,9 +62,7 @@
                                                 title="Delete">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
-                                        <form id="delete-form-<?= $sup['id'] ?>" action="<?= BASE_URL ?>/suppliers/<?= $sup['id'] ?>/delete" method="POST" class="d-none">
-                                            <?= csrfField() ?>
-                                        </form>
+                                        <form id="delete-form-<?= $sup['id'] ?>" action="<?= BASE_URL ?>/suppliers/<?= $sup['id'] ?>/delete" method="POST" class="d-none">                                        </form>
                                     </div>
                                 </td>
                             </tr>

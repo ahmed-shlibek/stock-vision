@@ -8,8 +8,6 @@
 </div>
 
 <form action="<?= BASE_URL ?>/products/store" method="POST" enctype="multipart/form-data">
-    <?= csrfField() ?>
-
     <div class="row">
         <!-- Main Form Details -->
         <div class="col-md-8">
@@ -28,32 +26,14 @@
                         <?php endif; ?>
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="sku" class="form-label">SKU (Stock Keeping Unit) <span class="required">*</span></label>
-                                <input type="text" id="sku" name="sku" 
-                                       class="form-control <?= hasError('sku') ? 'is-invalid' : '' ?>" 
-                                       value="<?= htmlspecialchars(old('sku')) ?>" required>
-                                <?php if (hasError('sku')): ?>
-                                    <span class="form-error"><?= htmlspecialchars(getError('sku')) ?></span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="barcode" class="form-label">Barcode (Optional)</label>
-                                <div class="input-icon-wrapper icon-right">
-                                    <input type="text" id="barcode" name="barcode" 
-                                           class="form-control <?= hasError('barcode') ? 'is-invalid' : '' ?>" 
-                                           value="<?= htmlspecialchars(old('barcode')) ?>">
-                                    <i class="fa-solid fa-barcode text-secondary"></i>
-                                </div>
-                                <?php if (hasError('barcode')): ?>
-                                    <span class="form-error"><?= htmlspecialchars(getError('barcode')) ?></span>
-                                <?php endif; ?>
-                            </div>
-                        </div>
+                    <div class="form-group">
+                        <label for="sku" class="form-label">SKU (Stock Keeping Unit) <span class="required">*</span></label>
+                        <input type="text" id="sku" name="sku"
+                               class="form-control <?= hasError('sku') ? 'is-invalid' : '' ?>"
+                               value="<?= htmlspecialchars(old('sku')) ?>" required>
+                        <?php if (hasError('sku')): ?>
+                            <span class="form-error"><?= htmlspecialchars(getError('sku')) ?></span>
+                        <?php endif; ?>
                     </div>
 
                     <div class="form-group mb-0">
@@ -158,15 +138,6 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
-
-                    <div class="form-group mb-0">
-                        <label class="form-label d-block">Status</label>
-                        <label class="toggle-switch">
-                            <input type="checkbox" name="is_active" value="1" <?= old('is_active', '1') ? 'checked' : '' ?>>
-                            <span class="toggle-slider"></span>
-                            <span class="toggle-label ml-2">Active Product</span>
-                        </label>
-                    </div>
                 </div>
             </div>
 
@@ -179,7 +150,7 @@
                         <div class="image-upload-wrapper text-center p-4 border rounded" style="border-style: dashed !important; background: var(--bg-secondary);">
                             <img id="image-preview" src="" alt="Preview" style="max-width: 100%; max-height: 200px; display: none; margin: 0 auto 15px auto; border-radius: var(--radius-md);">
                             <i class="fa-solid fa-cloud-arrow-up text-secondary fa-3x mb-3" id="upload-icon"></i>
-                            <p class="text-secondary mb-3">Drag and drop or click to upload</p>
+                            <p class="text-secondary mb-3">Click to choose a file</p>
                             <input type="file" id="image" name="image" class="form-control" accept="image/jpeg,image/png,image/webp" style="display: none;">
                             <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('image').click()">
                                 Choose File

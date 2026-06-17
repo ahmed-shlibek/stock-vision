@@ -38,18 +38,6 @@ class AuthController
             redirect('/');
         }
 
-        // Rate limiting
-        if (isLoginLocked()) {
-            setFlash('danger', 'Too many login attempts. Please try again in 15 minutes.');
-            redirect('/login');
-        }
-
-        // CSRF check
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token. Please try again.');
-            redirect('/login');
-        }
-
         $email    = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
 
@@ -72,23 +60,14 @@ class AuthController
         $user = $this->userModel->findByEmail($email);
 
         if (!$user || !password_verify($password, $user['password'])) {
-            recordFailedLogin();
             setFlash('danger', 'Invalid email or password.');
             setOld($_POST);
             redirect('/login');
         }
 
-        // Check if active
-        if (!$user['is_active']) {
-            setFlash('danger', 'Your account has been deactivated. Contact an administrator.');
-            redirect('/login');
-        }
-
         // Success
-        resetLoginAttempts();
         setSession($user);
         $this->userModel->updateLastLogin($user['id']);
-        logActivity('user.login', 'user', $user['id'], $user['name'] . ' logged in');
         clearOld();
 
         setFlash('success', 'Welcome back, ' . htmlspecialchars($user['name']) . '!');
@@ -100,7 +79,6 @@ class AuthController
      */
     public function logout(): void
     {
-        logActivity('user.logout', 'user', currentUserId(), currentUserName() . ' logged out');
         destroySession();
         // Start a new session for flash messages
         session_start();
@@ -133,11 +111,6 @@ class AuthController
     {
         requireLogin();
 
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/profile');
-        }
-
         $name  = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
 
@@ -152,16 +125,6 @@ class AuthController
             }
         }
 
-        // Handle avatar upload
-        $avatarFilename = null;
-        if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] !== UPLOAD_ERR_NO_FILE) {
-            if ($err = validateImage($_FILES['avatar'])) {
-                $errors['avatar'] = $err;
-            } else {
-                $avatarFilename = handleImageUpload($_FILES['avatar'], 'avatars');
-            }
-        }
-
         if (!empty($errors)) {
             setErrors($errors);
             setOld($_POST);
@@ -170,25 +133,12 @@ class AuthController
 
         // Update
         $data = ['name' => $name, 'email' => $email];
-        if ($avatarFilename) {
-            // Delete old avatar
-            $currentUser = $this->userModel->findById(currentUserId());
-            if ($currentUser['avatar']) {
-                deleteImage($currentUser['avatar'], 'avatars');
-            }
-            $data['avatar'] = $avatarFilename;
-        }
-
         $this->userModel->update(currentUserId(), $data);
 
         // Update session
         $_SESSION['user_name']  = $name;
         $_SESSION['user_email'] = $email;
-        if ($avatarFilename) {
-            $_SESSION['user_avatar'] = $avatarFilename;
-        }
 
-        logActivity('user.updated', 'user', currentUserId(), 'Updated profile');
         clearOld();
         setFlash('success', 'Profile updated successfully.');
         redirect('/profile');
@@ -211,11 +161,6 @@ class AuthController
     public function changePassword(): void
     {
         requireLogin();
-
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/change-password');
-        }
 
         $current  = $_POST['current_password'] ?? '';
         $new      = $_POST['new_password'] ?? '';
@@ -242,7 +187,6 @@ class AuthController
         }
 
         $this->userModel->changePassword(currentUserId(), $new);
-        logActivity('user.password_changed', 'user', currentUserId(), 'Changed password');
         setFlash('success', 'Password changed successfully.');
         redirect('/profile');
     }

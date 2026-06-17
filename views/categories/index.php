@@ -49,9 +49,7 @@
                                                 title="Delete">
                                             <i class="fa-solid fa-trash-can"></i>
                                         </button>
-                                        <form id="delete-form-<?= $cat['id'] ?>" action="<?= BASE_URL ?>/categories/<?= $cat['id'] ?>/delete" method="POST" class="d-none">
-                                            <?= csrfField() ?>
-                                        </form>
+                                        <form id="delete-form-<?= $cat['id'] ?>" action="<?= BASE_URL ?>/categories/<?= $cat['id'] ?>/delete" method="POST" class="d-none">                                        </form>
                                     </div>
                                 </td>
                             </tr>

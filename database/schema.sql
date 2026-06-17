@@ -18,9 +18,6 @@ CREATE TABLE `users` (
     `name` VARCHAR(100) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
     `password` VARCHAR(255) NOT NULL,
-    `role` ENUM('admin', 'employee', 'viewer') NOT NULL DEFAULT 'employee',
-    `avatar` VARCHAR(255) NULL,
-    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
     `last_login` DATETIME NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -50,7 +47,6 @@ CREATE TABLE `suppliers` (
     `phone` VARCHAR(20) NULL,
     `email` VARCHAR(255) NULL,
     `address` TEXT NULL,
-    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
     `deleted_at` DATETIME NULL COMMENT 'Soft delete timestamp'
@@ -63,7 +59,6 @@ CREATE TABLE `products` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
     `sku` VARCHAR(50) NOT NULL,
-    `barcode` VARCHAR(50) NULL,
     `category_id` INT UNSIGNED NULL,
     `supplier_id` INT UNSIGNED NULL,
     `description` TEXT NULL,
@@ -72,12 +67,10 @@ CREATE TABLE `products` (
     `min_stock_level` INT NOT NULL DEFAULT 10,
     `unit` VARCHAR(20) NOT NULL DEFAULT 'piece',
     `image` VARCHAR(255) NULL,
-    `is_active` TINYINT(1) NOT NULL DEFAULT 1,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NULL ON UPDATE CURRENT_TIMESTAMP,
     `deleted_at` DATETIME NULL COMMENT 'Soft delete timestamp',
     UNIQUE KEY `uk_products_sku` (`sku`),
-    KEY `idx_products_barcode` (`barcode`),
     KEY `idx_products_category` (`category_id`),
     KEY `idx_products_supplier` (`supplier_id`),
     KEY `idx_products_quantity` (`quantity`, `min_stock_level`),
@@ -108,24 +101,4 @@ CREATE TABLE `stock_movements` (
         REFERENCES `products`(`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_movements_user` FOREIGN KEY (`user_id`)
         REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ============================================================
--- Activity Logs Table
--- ============================================================
-CREATE TABLE `activity_logs` (
-    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT UNSIGNED NULL,
-    `action` VARCHAR(50) NOT NULL COMMENT 'e.g. product.created, user.login',
-    `entity_type` VARCHAR(50) NULL COMMENT 'e.g. product, supplier, category',
-    `entity_id` INT UNSIGNED NULL,
-    `description` TEXT NOT NULL,
-    `ip_address` VARCHAR(45) NULL,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    KEY `idx_logs_user` (`user_id`),
-    KEY `idx_logs_action` (`action`),
-    KEY `idx_logs_entity` (`entity_type`, `entity_id`),
-    KEY `idx_logs_date` (`created_at`),
-    CONSTRAINT `fk_logs_user` FOREIGN KEY (`user_id`)
-        REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

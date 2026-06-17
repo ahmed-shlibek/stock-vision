@@ -14,7 +14,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <!-- Image & Barcode Card -->
+        <!-- Image Card -->
         <div class="card mb-4 text-center">
             <div class="card-body">
                 <?php if ($product['image']): ?>
@@ -27,16 +27,6 @@
 
                 <h3 class="mb-1"><?= htmlspecialchars($product['name']) ?></h3>
                 <p class="text-secondary mb-4">SKU: <?= htmlspecialchars($product['sku']) ?></p>
-
-                <?php if ($product['barcode']): ?>
-                    <div class="barcode-container p-3 bg-white border rounded">
-                        <svg id="barcode-svg" data-value="<?= htmlspecialchars($product['barcode']) ?>"></svg>
-                    </div>
-                <?php else: ?>
-                    <div class="p-3 bg-secondary-light border rounded text-secondary text-sm">
-                        No barcode assigned
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
 
@@ -123,16 +113,6 @@
             </div>
             <div class="card-body">
                 <div class="row mb-4">
-                    <div class="col-md-3 text-secondary text-sm">Status</div>
-                    <div class="col-md-9">
-                        <?php if ($product['is_active']): ?>
-                            <span class="badge badge-success">Active</span>
-                        <?php else: ?>
-                            <span class="badge badge-secondary">Inactive</span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <div class="row mb-4">
                     <div class="col-md-3 text-secondary text-sm">Description</div>
                     <div class="col-md-9">
                         <?= nl2br(htmlspecialchars($product['description'] ?: 'No description provided.')) ?>
@@ -160,6 +140,4 @@
     </div>
 </div>
 
-<!-- Load JsBarcode -->
-<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 <script src="<?= BASE_URL ?>/js/products.js"></script>

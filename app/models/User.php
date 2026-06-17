@@ -51,7 +51,7 @@ class User
 
         // Fetch page
         $stmt = $this->db->prepare("
-            SELECT `id`, `name`, `email`, `role`, `avatar`, `is_active`, `last_login`, `created_at`
+            SELECT `id`, `name`, `email`, `last_login`, `created_at`
             FROM `users`
             ORDER BY `created_at` DESC
             LIMIT ? OFFSET ?
@@ -72,16 +72,14 @@ class User
     public function create(array $data): int
     {
         $stmt = $this->db->prepare("
-            INSERT INTO `users` (`name`, `email`, `password`, `role`, `is_active`)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO `users` (`name`, `email`, `password`)
+            VALUES (?, ?, ?)
         ");
 
         $stmt->execute([
             $data['name'],
             $data['email'],
             password_hash($data['password'], PASSWORD_BCRYPT),
-            $data['role'] ?? ROLE_EMPLOYEE,
-            $data['is_active'] ?? 1,
         ]);
 
         return (int)$this->db->lastInsertId();
@@ -95,7 +93,7 @@ class User
         $fields = [];
         $values = [];
 
-        foreach (['name', 'email', 'role', 'is_active', 'avatar'] as $field) {
+        foreach (['name', 'email'] as $field) {
             if (array_key_exists($field, $data)) {
                 $fields[] = "`{$field}` = ?";
                 $values[] = $data[$field];
@@ -130,15 +128,6 @@ class User
     public function updateLastLogin(int $id): bool
     {
         $stmt = $this->db->prepare("UPDATE `users` SET `last_login` = NOW() WHERE `id` = ?");
-        return $stmt->execute([$id]);
-    }
-
-    /**
-     * Toggle user active status
-     */
-    public function toggleActive(int $id): bool
-    {
-        $stmt = $this->db->prepare("UPDATE `users` SET `is_active` = NOT `is_active` WHERE `id` = ?");
         return $stmt->execute([$id]);
     }
 

@@ -50,17 +50,11 @@ class SupplierController
      */
     public function store(): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/suppliers/create');
-        }
-
         $data = [
             'name'      => trim($_POST['name'] ?? ''),
             'phone'     => trim($_POST['phone'] ?? ''),
             'email'     => trim($_POST['email'] ?? ''),
             'address'   => trim($_POST['address'] ?? ''),
-            'is_active' => isset($_POST['is_active']) ? 1 : 0,
         ];
 
         // Validate
@@ -78,8 +72,7 @@ class SupplierController
         }
 
         $id = $this->supplierModel->create($data);
-        logActivity('supplier.created', 'supplier', $id, 'Created supplier: ' . $data['name']);
-        
+
         clearOld();
         setFlash('success', 'Supplier created successfully.');
         redirect('/suppliers');
@@ -106,11 +99,6 @@ class SupplierController
      */
     public function update(int $id): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect("/suppliers/{$id}/edit");
-        }
-
         $supplier = $this->supplierModel->findById($id);
         if (!$supplier) {
             setFlash('danger', 'Supplier not found.');
@@ -122,7 +110,6 @@ class SupplierController
             'phone'     => trim($_POST['phone'] ?? ''),
             'email'     => trim($_POST['email'] ?? ''),
             'address'   => trim($_POST['address'] ?? ''),
-            'is_active' => isset($_POST['is_active']) ? 1 : 0,
         ];
 
         // Validate
@@ -139,8 +126,7 @@ class SupplierController
         }
 
         $this->supplierModel->update($id, $data);
-        logActivity('supplier.updated', 'supplier', $id, 'Updated supplier: ' . $data['name']);
-        
+
         clearOld();
         setFlash('success', 'Supplier updated successfully.');
         redirect('/suppliers');
@@ -151,11 +137,6 @@ class SupplierController
      */
     public function delete(int $id): void
     {
-        if (!verifyCsrf()) {
-            setFlash('danger', 'Invalid security token.');
-            redirect('/suppliers');
-        }
-
         $supplier = $this->supplierModel->findById($id);
         if (!$supplier) {
             setFlash('danger', 'Supplier not found.');
@@ -163,8 +144,7 @@ class SupplierController
         }
 
         $this->supplierModel->delete($id);
-        logActivity('supplier.deleted', 'supplier', $id, 'Deleted supplier: ' . $supplier['name']);
-        
+
         setFlash('success', 'Supplier deleted successfully.');
         redirect('/suppliers');
     }
