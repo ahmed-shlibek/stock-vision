@@ -89,6 +89,27 @@ class StockMovement
     }
 
     /**
+     * Get the most recent movements for a specific product
+     */
+    public function getRecentByProduct(int $productId, int $limit = 10): array
+    {
+        $query = "
+            SELECT sm.*, p.unit as product_unit, u.name as user_name
+            FROM stock_movements sm
+            JOIN products p ON sm.product_id = p.id
+            JOIN users u ON sm.user_id = u.id
+            WHERE sm.product_id = :product_id
+            ORDER BY sm.created_at DESC
+            LIMIT :limit
+        ";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':product_id', $productId, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
      * Record a stock movement transaction (IN or OUT)
      * Automatically updates the product's quantity
      * 

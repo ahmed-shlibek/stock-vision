@@ -38,6 +38,7 @@ class ProductController
             'current_page' => $result['current_page'],
             'total_pages'  => $result['pages'],
             'total'        => $result['total'],
+            'per_page'     => 10,
             'base_url'     => '/products',
             'query_params' => ['search' => $search, 'category' => $categoryId]
         ];
@@ -56,8 +57,11 @@ class ProductController
             redirect('/products');
         }
 
+        $stockModel = new StockMovement($this->db);
+        $recentMovements = $stockModel->getRecentByProduct($id, 10);
+
         $pageTitle = 'Product Details - ' . htmlspecialchars($product['sku']);
-        $this->render('products/show', compact('pageTitle', 'product'));
+        $this->render('products/show', compact('pageTitle', 'product', 'recentMovements'));
     }
 
     /**

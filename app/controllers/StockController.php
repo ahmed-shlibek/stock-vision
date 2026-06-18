@@ -25,17 +25,23 @@ class StockController
         $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
         
         $filters = [
-            'type'      => $_GET['type'] ?? '',
-            'date_from' => $_GET['date_from'] ?? '',
-            'date_to'   => $_GET['date_to'] ?? ''
+            'type'       => $_GET['type'] ?? '',
+            'date_from'  => $_GET['date_from'] ?? '',
+            'date_to'    => $_GET['date_to'] ?? '',
+            'product_id' => isset($_GET['product_id']) ? (int)$_GET['product_id'] : null,
         ];
 
         $result = $this->stockModel->getPaginated($page, 15, $filters);
 
-        $pageTitle   = 'Stock Movements';
-        $movements   = $result['data'];
-        $totalPages  = $result['last_page'];
-        $currentPage = $page;
+        $pageTitle  = 'Stock Movements';
+        $movements  = $result['data'];
+        $pagination = [
+            'current_page' => $page,
+            'total_pages'  => $result['last_page'],
+            'total'        => $result['total'],
+            'per_page'     => 15,
+            'base_url'     => '/stock',
+        ];
 
         $content = __DIR__ . '/../../views/stock/index.php';
         require __DIR__ . '/../../views/layouts/app.php';

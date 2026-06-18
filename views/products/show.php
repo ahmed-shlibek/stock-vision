@@ -59,42 +59,42 @@
         <!-- Overview Stats -->
         <div class="row mb-4">
             <div class="col-md-4">
-                <div class="stat-card">
-                    <div class="stat-icon bg-primary-light text-primary">
+                <div class="stat-card primary">
+                    <div class="stat-card-icon">
                         <i class="fa-solid fa-tag"></i>
                     </div>
-                    <div class="stat-content">
-                        <div class="stat-title">Unit Price</div>
-                        <div class="stat-value"><?= formatCurrency($product['unit_price']) ?></div>
+                    <div class="stat-card-info">
+                        <div class="stat-card-label">Unit Price</div>
+                        <div class="stat-card-value"><?= formatCurrency($product['unit_price']) ?></div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="stat-card">
-                    <?php 
-                        $qty = $product['quantity'];
-                        $min = $product['min_stock_level'];
-                        $bgClass = 'bg-success-light text-success';
-                        if ($qty == 0) $bgClass = 'bg-danger-light text-danger';
-                        elseif ($qty <= $min) $bgClass = 'bg-warning-light text-warning';
-                    ?>
-                    <div class="stat-icon <?= $bgClass ?>">
+                <?php
+                    $qty = $product['quantity'];
+                    $min = $product['min_stock_level'];
+                    $stockVariant = 'success';
+                    if ($qty == 0) $stockVariant = 'danger';
+                    elseif ($qty <= $min) $stockVariant = 'warning';
+                ?>
+                <div class="stat-card <?= $stockVariant ?>">
+                    <div class="stat-card-icon">
                         <i class="fa-solid fa-boxes-stacked"></i>
                     </div>
-                    <div class="stat-content">
-                        <div class="stat-title">Current Stock</div>
-                        <div class="stat-value"><?= htmlspecialchars($qty) ?> <span class="text-sm text-secondary font-normal"><?= htmlspecialchars($product['unit']) ?></span></div>
+                    <div class="stat-card-info">
+                        <div class="stat-card-label">Current Stock</div>
+                        <div class="stat-card-value"><?= htmlspecialchars($qty) ?> <span class="text-sm text-secondary font-normal"><?= htmlspecialchars($product['unit']) ?></span></div>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="stat-card">
-                    <div class="stat-icon bg-info-light text-info">
+                <div class="stat-card info">
+                    <div class="stat-card-icon">
                         <i class="fa-solid fa-layer-group"></i>
                     </div>
-                    <div class="stat-content">
-                        <div class="stat-title">Category</div>
-                        <div class="stat-value text-truncate" style="font-size: 1.25rem;">
+                    <div class="stat-card-info">
+                        <div class="stat-card-label">Category</div>
+                        <div class="stat-card-value text-truncate" style="font-size: 1.25rem;">
                             <?php if ($product['category_name']): ?>
                                 <?= htmlspecialchars($product['category_name']) ?>
                             <?php else: ?>
@@ -127,15 +127,79 @@
             </div>
         </div>
 
-        <!-- Recent Movements (Placeholder for Phase 3) -->
+        <!-- Recent Movements -->
         <div class="card">
-            <div class="card-header">
-                <h3 class="card-title">Recent Movements</h3>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title m-0">Recent Movements</h3>
+                <div class="d-flex gap-2">
+                    <a href="<?= BASE_URL ?>/stock/in" class="btn btn-sm btn-success">
+                        <i class="fa-solid fa-arrow-down-to-line"></i> Stock In
+                    </a>
+                    <a href="<?= BASE_URL ?>/stock/out" class="btn btn-sm btn-warning">
+                        <i class="fa-solid fa-arrow-up-from-bracket"></i> Stock Out
+                    </a>
+                </div>
             </div>
-            <div class="card-body text-center p-5 text-secondary">
-                <i class="fa-solid fa-clock-rotate-left fa-3x mb-3 text-secondary-light"></i>
-                <p>Movement history will be available in the next phase.</p>
-            </div>
+            <?php if (empty($recentMovements)): ?>
+                <div class="card-body text-center p-5 text-secondary">
+                    <i class="fa-solid fa-clock-rotate-left fa-3x mb-3 text-secondary-light"></i>
+                    <p>No movements recorded yet for this product.</p>
+                </div>
+            <?php else: ?>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th class="text-right">Quantity</th>
+                                    <th class="text-right">Balance</th>
+                                    <th>User</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($recentMovements as $mov): ?>
+                                    <tr>
+                                        <td class="text-secondary whitespace-nowrap">
+                                            <?= date('M j, Y H:i', strtotime($mov['created_at'])) ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($mov['type'] === 'in'): ?>
+                                                <span class="badge badge-success"><i class="fa-solid fa-arrow-down"></i> IN</span>
+                                            <?php else: ?>
+                                                <span class="badge badge-warning"><i class="fa-solid fa-arrow-up"></i> OUT</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="text-right font-medium <?= $mov['type'] === 'in' ? 'text-success' : 'text-warning' ?>">
+                                            <?= $mov['type'] === 'in' ? '+' : '-' ?><?= htmlspecialchars($mov['quantity']) ?>
+                                            <span class="text-xs text-secondary ml-1"><?= htmlspecialchars($mov['product_unit']) ?></span>
+                                        </td>
+                                        <td class="text-right">
+                                            <div class="text-xs text-secondary">
+                                                <?= htmlspecialchars($mov['quantity_before']) ?> &rarr; <span class="font-medium text-dark"><?= htmlspecialchars($mov['quantity_after']) ?></span>
+                                            </div>
+                                        </td>
+                                        <td class="text-sm">
+                                            <i class="fa-regular fa-user text-secondary mr-1"></i>
+                                            <?= htmlspecialchars($mov['user_name']) ?>
+                                        </td>
+                                        <td class="text-sm text-secondary text-truncate" style="max-width: 200px;" title="<?= htmlspecialchars($mov['notes'] ?? '') ?>">
+                                            <?= htmlspecialchars($mov['notes'] ?: '-') ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-right">
+                    <a href="<?= BASE_URL ?>/stock?product_id=<?= $product['id'] ?>" class="btn btn-sm btn-outline">
+                        View All Movements <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

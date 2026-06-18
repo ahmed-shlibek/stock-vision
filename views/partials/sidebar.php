@@ -72,17 +72,6 @@ function isActive(string $path): string {
         </div>
     </nav>
 
-    <div class="sidebar-footer">
-        <div class="avatar avatar-sm">
-            <?= strtoupper(substr(currentUserName() ?? 'U', 0, 1)) ?>
-        </div>
-
-        <div class="sidebar-user-info">
-            <div class="sidebar-user-name"><?= htmlspecialchars(currentUserName() ?? '') ?></div>
-            <div class="sidebar-user-role"><?= htmlspecialchars(currentUserEmail() ?? '') ?></div>
-        </div>
-    </div>
-
     <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle Sidebar">
         <i class="fa-solid fa-chevron-left"></i>
     </button>

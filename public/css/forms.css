@@ -139,8 +139,8 @@ select.form-control {
     z-index: 2;
 }
 
-.input-icon-wrapper.icon-left i { left: 14px; }
-.input-icon-wrapper.icon-right i { right: 14px; cursor: pointer; }
+.input-icon-wrapper.icon-left > i:first-child { left: 14px; }
+.input-icon-wrapper.icon-right > i:last-child { right: 14px; cursor: pointer; }
 
 .input-icon-wrapper.icon-left .form-control { padding-left: 40px; }
 .input-icon-wrapper.icon-right .form-control { padding-right: 40px; }
