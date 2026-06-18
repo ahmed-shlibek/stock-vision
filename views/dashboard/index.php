@@ -270,7 +270,7 @@
                     data: catData.values,
                     backgroundColor: catData.colors,
                     borderWidth: 2,
-                    borderColor: isDark ? '#1e293b' : '#fff',
+                    borderColor: '#fff',
                     hoverOffset: 6
                 }]
             },
